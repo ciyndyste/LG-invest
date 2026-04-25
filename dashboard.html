@@ -6,6 +6,8 @@
     <title>LG Invest | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .nav-active { color: #a50034; }
@@ -69,7 +71,7 @@
     <div class="grid grid-cols-2 gap-4 p-4">
         <div class="bg-[#1e3a8a] p-6 rounded-xl shadow-lg border-b-4 border-white/20">
             <p class="text-white/70 text-[10px] font-black uppercase tracking-wider mb-1">Solde du compte</p>
-            <h3 id="userBalance" class="text-xl font-black text-white italic">FC 1,500</h3>
+            <h3 id="userBalance" class="text-xl font-black text-white italic">FC 0</h3>
         </div>
         <div class="bg-[#1e3a8a] p-6 rounded-xl shadow-lg border-b-4 border-white/20">
             <p class="text-white/70 text-[10px] font-black uppercase tracking-wider mb-1">Revenu cumulé</p>
@@ -122,6 +124,42 @@
     </nav>
 
     <script>
+        // CONFIGURATION CONGO PÉTROLE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        // Initialisation
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        // Récupération du numéro stocké au login
+        const userPhone = localStorage.getItem('userPhone');
+
+        if (!userPhone) {
+            window.location.href = "index.html";
+        } else {
+            // Lecture en temps réel des données dans congo_petrole/users
+            database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', snapshot => {
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        const userData = childSnapshot.val();
+                        // Mise à jour des textes avec les données de la console
+                        document.getElementById('userBalance').innerText = 'FC ' + (userData.solde || 0).toLocaleString();
+                        document.getElementById('userIncome').innerText = 'FC ' + (userData.revenu_cumule || 0).toLocaleString();
+                    });
+                }
+            });
+        }
+
         function closeModal() {
             document.getElementById('announcementModal').classList.add('hidden');
         }
