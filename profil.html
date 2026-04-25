@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LG Invest | Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .bg-lg-blue { background-color: #1e3a8a; }
+        .menu-item { border-bottom: 1px solid #f1f1f1; transition: background 0.2s; }
+        .menu-item:active { background-color: #f9f9f9; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div class="bg-white p-6 flex justify-between items-start">
+        <div class="space-y-1">
+            <p class="text-gray-900 font-bold text-sm">Numéro de téléphone</p>
+            <p id="displayPhone" class="text-gray-900 font-black text-lg">+243 000000000</p>
+        </div>
+        <div class="flex items-center gap-1">
+            <div class="w-8 h-8 bg-[#a50034] rounded-full flex items-center justify-center font-bold text-white text-xs">L</div>
+            <h1 class="text-xl font-black uppercase text-[#a50034]">LG</h1>
+        </div>
+    </div>
+
+    <div class="bg-white grid grid-cols-3 gap-2 p-4 text-center">
+        <a href="recharge.html" class="flex flex-col items-center gap-2">
+            <div class="text-[#e11d48] text-2xl">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <span class="text-[11px] font-bold text-gray-700">Dépôt en ligne</span>
+        </a>
+        <a href="retrait.html" class="flex flex-col items-center gap-2">
+            <div class="text-[#e11d48] text-2xl">
+                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+            </div>
+            <span class="text-[11px] font-bold text-gray-700">Retirer de l'argent</span>
+        </a>
+        <a href="enregistrement.html" class="flex flex-col items-center gap-2">
+            <div class="text-[#e11d48] text-2xl">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <span class="text-[11px] font-bold text-gray-700">Enregistrer</span>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 p-4">
+        <div class="bg-[#262626] p-5 rounded-xl shadow-lg relative overflow-hidden h-24 flex flex-col justify-center">
+            <h3 id="balance" class="text-white text-lg font-black italic">FC 1,500</h3>
+            <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider mt-1">Solde du compte</p>
+        </div>
+        <div class="bg-[#262626] p-5 rounded-xl shadow-lg relative overflow-hidden h-24 flex flex-col justify-center">
+            <h3 id="income" class="text-white text-lg font-black italic">FC 0.00</h3>
+            <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider mt-1">Revenu cumulé</p>
+        </div>
+    </div>
+
+    <div class="bg-white mx-4 mt-2 rounded-xl overflow-hidden shadow-sm">
+        
+        <a href="mes_produits.html" class="menu-item p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-50 text-yellow-500">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <span class="text-sm font-bold text-gray-800">Le produit que vous avez acheté</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+        </a>
+
+        <a href="a_propos.html" class="menu-item p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <span class="text-sm font-bold text-gray-800">À propos de nous</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+        </a>
+
+        <a href="regles.html" class="menu-item p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500">
+                    <i class="fa-solid fa-circle-play"></i>
+                </div>
+                <span class="text-sm font-bold text-gray-800">Règles de la plateforme</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+        </a>
+
+        <a href="https://wa.me/votre_numero" class="menu-item p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <span class="text-sm font-bold text-gray-800">Service client</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+        </a>
+
+        <a href="historique.html" class="menu-item p-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500">
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <span class="text-sm font-bold text-gray-800">Historique du compte</span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+        </a>
+
+    </div>
+
+    <div class="p-4 mt-4">
+        <button onclick="logout()" class="w-full bg-white border border-gray-200 text-red-500 p-4 rounded-xl font-bold text-sm active:bg-gray-50 transition-colors">
+            Se déconnecter
+        </button>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Maison</span>
+        </a>
+        <a href="produit.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Produit</span>
+        </a>
+        <a href="equipe.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Équipe</span>
+        </a>
+        <a href="profil.html" class="flex flex-col items-center gap-1 text-orange-400">
+            <i class="fa-solid fa-user text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Le mien</span>
+        </a>
+    </nav>
+
+    <script>
+        function logout() {
+            if(confirm("Voulez-vous vous déconnecter ?")) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
