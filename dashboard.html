@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LG Invest | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .nav-active { color: #a50034; }
+        .bg-lg { background-color: #a50034; }
+        .text-lg { color: #a50034; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div class="bg-white p-4 flex justify-center border-b border-gray-100 sticky top-0 z-40">
+        <div class="flex items-center gap-1">
+            <div class="w-8 h-8 bg-[#a50034] rounded-full flex items-center justify-center font-bold text-white text-xs">L</div>
+            <h1 class="text-xl font-black uppercase text-[#a50034]">LG <span class="font-normal text-gray-400">Invest</span></h1>
+        </div>
+    </div>
+
+    <div class="bg-white grid grid-cols-3 gap-4 p-6 shadow-sm">
+        <a href="recharge.html" class="flex flex-col items-center gap-2">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700">
+                <i class="fa-solid fa-credit-card text-xl"></i>
+            </div>
+            <span class="text-xs font-bold text-gray-600">Paiement</span>
+        </a>
+        <a href="retrait.html" class="flex flex-col items-center gap-2">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700">
+                <i class="fa-solid fa-upload text-xl"></i>
+            </div>
+            <span class="text-xs font-bold text-gray-600">Retrait</span>
+        </a>
+        <a href="https://wa.me/24385277175" class="flex flex-col items-center gap-2">
+            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700">
+                <i class="fa-solid fa-headset text-xl"></i>
+            </div>
+            <span class="text-xs font-bold text-gray-600">Service client</span>
+        </a>
+    </div>
+
+    <div class="p-4">
+        <div class="relative rounded-3xl overflow-hidden shadow-xl">
+            <img src="IMG_4247.jpeg" class="w-full h-48 object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#a50034]/80 to-transparent p-6 flex flex-col justify-center">
+                <h2 class="text-4xl font-black text-white italic">HA</h2>
+                <p class="text-white text-sm font-bold">Home Appliances</p>
+                <div class="grid grid-cols-2 gap-x-4 mt-2 text-[10px] text-white/90 font-medium">
+                    <span>• Réfrigérateurs</span>
+                    <span>• Lave-linges</span>
+                    <span>• Micro-ondes</span>
+                    <span>• Climatiseurs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-[#1e3a8a] text-white p-2 flex items-center gap-3 overflow-hidden">
+        <i class="fa-solid fa-volume-high text-xs ml-2"></i>
+        <marquee class="text-xs font-bold tracking-tight">
+            Nouvelle recharge de 15,000 FC par ******2371 ... Bonus de parrainage de 38% activé ! ... LG Invest recrute des franchisés en RDC le 14 mai.
+        </marquee>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 p-4">
+        <div class="bg-[#1e3a8a] p-6 rounded-xl shadow-lg border-b-4 border-white/20">
+            <p class="text-white/70 text-[10px] font-black uppercase tracking-wider mb-1">Solde du compte</p>
+            <h3 id="userBalance" class="text-xl font-black text-white italic">FC 1,500</h3>
+        </div>
+        <div class="bg-[#1e3a8a] p-6 rounded-xl shadow-lg border-b-4 border-white/20">
+            <p class="text-white/70 text-[10px] font-black uppercase tracking-wider mb-1">Revenu cumulé</p>
+            <h3 id="userIncome" class="text-xl font-black text-white italic">FC 0.00</h3>
+        </div>
+    </div>
+
+    <div id="announcementModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
+        <div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+            <div class="bg-gray-800 p-6 text-center">
+                <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Notifier</h2>
+            </div>
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto text-sm text-gray-700 leading-relaxed font-medium">
+                <p>Fabrication LG. Rejoignez l'aventure !</p>
+                <p>1. Investissez <b>6 000 FC</b> et recevez <b>1 500 FC</b> par jour.</p>
+                <p>2. Frais d'inscription : <b>1 500 FC</b> (offerts).</p>
+                <p>3. Parrainez vos amis et recevez <b>38%</b> de commission immédiate.</p>
+                <p>4. LG débutera officiellement le recrutement de franchisés en RDC le 14 mai.</p>
+                
+                <a href="https://t.me/+sCOJYExKHoQ4NWM0" class="flex items-center justify-center gap-3 bg-gray-100 p-4 rounded-xl text-blue-600 font-bold hover:bg-gray-200 transition-colors">
+                    <i class="fa-brands fa-telegram text-2xl"></i>
+                    Rejoignez la chaîne officielle Telegram
+                </a>
+            </div>
+            <div class="p-4 pt-0">
+                <button onclick="closeModal()" class="w-full bg-gray-800 text-white p-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] active:scale-95 transition-transform">
+                    D'ACCORD
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 nav-active">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Maison</span>
+        </a>
+        <a href="produit.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Produit</span>
+        </a>
+        <a href="equipe.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Équipe</span>
+        </a>
+        <a href="profil.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-user text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Le mien</span>
+        </a>
+    </nav>
+
+    <script>
+        function closeModal() {
+            document.getElementById('announcementModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
