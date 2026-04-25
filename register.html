@@ -6,9 +6,11 @@
     <title>LG Investissement | Créer un compte</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .input-border { border: 1px solid #e5e7eb; } /* Border light gray */
+        .input-border { border: 1px solid #e5e7eb; }
         .lg-input:focus { border-color: #a1a1aa; outline: none; box-shadow: 0 0 0 1px #a1a1aa; }
     </style>
 </head>
@@ -24,24 +26,23 @@
         </div>
 
         <form id="registerForm" class="w-full max-w-[340px] space-y-4">
-            
-            <div class="input-border rounded-xl p-4 flex items-center gap-3 bg-white lg-input-container">
+            <div class="input-border rounded-xl p-4 flex items-center gap-3 bg-white">
                 <span class="font-medium text-gray-800">+243</span>
-                <input type="tel" id="phone" placeholder="Saisissez le numéro de téléphone portable" 
+                <input type="tel" id="phone" placeholder="Numéro de téléphone" 
                        class="w-full text-sm font-normal text-gray-900 focus:outline-none lg-input" required>
             </div>
 
-            <div class="input-border rounded-xl p-4 flex items-center bg-white lg-input-container">
-                <input type="password" id="password" placeholder="Veuillez saisir votre mot de passe" 
+            <div class="input-border rounded-xl p-4 flex items-center bg-white">
+                <input type="password" id="password" placeholder="Mot de passe" 
                        class="w-full text-sm font-normal text-gray-900 focus:outline-none lg-input" required>
             </div>
 
-            <div class="input-border rounded-xl p-4 flex items-center bg-white lg-input-container">
+            <div class="input-border rounded-xl p-4 flex items-center bg-white">
                 <input type="password" id="confirmPassword" placeholder="Répéter le mot de passe" 
                        class="w-full text-sm font-normal text-gray-900 focus:outline-none lg-input" required>
             </div>
 
-            <div class="input-border rounded-xl p-4 flex items-center bg-white lg-input-container">
+            <div class="input-border rounded-xl p-4 flex items-center bg-white">
                 <input type="text" id="inviteCode" placeholder="Code d'invitation" 
                        class="w-full text-sm font-medium text-gray-900 uppercase focus:outline-none lg-input" required>
             </div>
@@ -51,29 +52,72 @@
                 Créer un compte
             </button>
 
-            <a href="login.html" 
+            <a href="index.html" 
                class="block w-full text-center input-border text-gray-900 p-4 rounded-full font-bold text-sm tracking-tight active:scale-98 transition-transform">
                 J'ai déjà un compte, connectez-vous
             </a>
         </form>
-
     </div>
 
-    <div class="w-full max-w-[380px] mx-auto p-4 flex justify-center sticky bottom-0">
-        <div class="input-border rounded-full p-3 pl-5 pr-1 flex items-center gap-2 bg-slate-50 w-full justify-between">
-            <i class="fa-solid fa-lock text-gray-400 text-xs"></i>
-            <span class="text-xs font-normal text-gray-900 tracking-tight">lg-invest.com</span>
-            <div class="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
-                <i class="fa-solid fa-rotate-right"></i>
-            </div>
-        </div>
-    </div>
+    <script>
+        // CONFIGURATION CONGO PÉTROLE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", // Ta clé API
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.css"></script>
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-    <script type="module">
-        // Ton script Firebase pour l'enregistrement (comme on a fait pour Congo Pétrole)
-        // ... (à ajouter après avoir configuré le nouveau projet Firebase)
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const inviteCode = document.getElementById('inviteCode').value;
+            const btn = document.getElementById('submitBtn');
+
+            if (password !== confirmPassword) {
+                alert("Les mots de passe ne correspondent pas");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "INSCRIPTION EN COURS...";
+
+            // Vérifier si le numéro existe déjà dans Congo Pétrole
+            database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', snapshot => {
+                if (snapshot.exists()) {
+                    alert("Ce numéro est déjà utilisé sur Congo Pétrole.");
+                    btn.disabled = false;
+                    btn.innerText = "CRÉER UN COMPTE";
+                } else {
+                    // Création du compte dans le dossier congo_petrole/users
+                    const newUserRef = database.ref('congo_petrole/users').push();
+                    newUserRef.set({
+                        phone: phone,
+                        password: password,
+                        inviteCode: inviteCode,
+                        solde: 1500, // Bonus de 1500 FC offert comme prévu
+                        revenu_cumule: 0,
+                        dateInscription: new Date().toISOString()
+                    }).then(() => {
+                        alert("Compte LG Invest créé avec succès !");
+                        localStorage.setItem('userPhone', phone);
+                        window.location.href = "dashboard.html";
+                    }).catch(error => {
+                        alert("Erreur: " + error.message);
+                        btn.disabled = false;
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
