@@ -6,18 +6,20 @@
     <title>LG Invest | Mes Produits</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .bg-lg-blue { background-color: #1e3a8a; }
-        .product-active-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #f36f21; }
+        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid #a50034; }
         .progress-bar { height: 6px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #f36f21; }
+        .progress-fill { height: 100%; background: #a50034; transition: width 0.5s ease-out; }
     </style>
 </head>
 <body class="pb-24">
 
     <div class="bg-white p-4 flex items-center gap-4 border-b sticky top-0 z-50">
-        <a href="produit.html" class="text-gray-600"><i class="fa-solid fa-chevron-left"></i></a>
+        <a href="profil.html" class="text-gray-600"><i class="fa-solid fa-chevron-left"></i></a>
         <h1 class="text-lg font-bold text-gray-900">Mes investissements</h1>
     </div>
 
@@ -32,18 +34,16 @@
     </div>
 
     <div class="p-4 space-y-4" id="myProductsList">
-        
         <div id="emptyMessage" class="flex flex-col items-center justify-center py-24 text-center">
             <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                 <i class="fa-solid fa-box-open text-4xl text-gray-400"></i>
             </div>
             <h3 class="text-gray-900 font-black uppercase text-sm tracking-widest">Aucun produit actif</h3>
-            <p class="text-gray-400 text-xs mt-2 px-10 font-medium">Vous n'avez pas encore loué de matériel LG. Commencez à générer des revenus dès maintenant.</p>
+            <p class="text-gray-400 text-xs mt-2 px-10 font-medium">Vous n'avez pas encore loué de matériel. Commencez à générer des revenus dès maintenant.</p>
             <a href="produit.html" class="mt-6 bg-[#a50034] text-white px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">
                 Découvrir les produits
             </a>
         </div>
-
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
@@ -59,26 +59,88 @@
             <i class="fa-solid fa-gift text-xl"></i>
             <span class="text-[10px] font-bold uppercase">Équipe</span>
         </a>
-        <a href="profil.html" class="flex flex-col items-center gap-1 text-white/50">
+        <a href="profil.html" class="flex flex-col items-center gap-1 text-orange-400">
             <i class="fa-solid fa-user text-xl"></i>
             <span class="text-[10px] font-bold uppercase">Le mien</span>
         </a>
     </nav>
 
     <script>
-        // Cette fonction sera appelée par votre système Firebase 
-        // dès que l'utilisateur achète un VIP
-        function renderUserProducts(products) {
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const userPhone = localStorage.getItem('userPhone');
+
+        if (!userPhone) { window.location.href = "index.html"; }
+
+        // Charger les produits de l'utilisateur
+        database.ref('congo_petrole/investissements').orderByChild('userPhone').equalTo(userPhone).on('value', snapshot => {
             const list = document.getElementById('myProductsList');
             const empty = document.getElementById('emptyMessage');
+            let totalRev = 0;
             
-            if (products && products.length > 0) {
+            if (snapshot.exists()) {
                 empty.classList.add('hidden');
-                // Logique pour injecter les cartes HTML ici
+                list.innerHTML = ""; // Nettoyer la liste
+                
+                snapshot.forEach(child => {
+                    const data = child.val();
+                    totalRev += data.revenu_actuel || 0;
+                    
+                    // Calcul de la progression (temps écoulé)
+                    const dateAchat = new Date(data.dateAchat).getTime();
+                    const maintenant = new Date().getTime();
+                    const dureeMs = (data.duree || 1) * 24 * 60 * 60 * 1000;
+                    const progres = Math.min(((maintenant - dateAchat) / dureeMs) * 100, 100);
+
+                    const productHTML = `
+                        <div class="product-card p-5 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-black text-gray-900 text-sm uppercase">${data.nomProduit || 'VIP'}</h4>
+                                    <p class="text-[10px] text-gray-400 font-bold">Investissement: FC ${data.prix.toLocaleString()}</p>
+                                </div>
+                                <span class="bg-green-100 text-green-600 text-[9px] font-black px-2 py-1 rounded-md uppercase">En production</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded-xl">
+                                <div>
+                                    <p class="text-[9px] font-bold text-gray-400 uppercase">Gains journaliers</p>
+                                    <p class="text-sm font-black text-gray-800 italic">FC ${data.gainJournalier.toLocaleString()}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[9px] font-bold text-gray-400 uppercase">Déjà généré</p>
+                                    <p class="text-sm font-black text-green-600 italic">FC ${data.revenu_actuel.toLocaleString()}</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-center text-[9px] font-bold text-gray-400">
+                                    <span>PROGRESSION DU CONTRAT</span>
+                                    <span>${Math.floor(progres)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progres}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', productHTML);
+                });
+                document.getElementById('totalRevenue').innerText = `FC ${totalRev.toLocaleString()}`;
             } else {
                 empty.classList.remove('hidden');
             }
-        }
+        });
     </script>
 </body>
 </html>
