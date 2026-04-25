@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LG Invest | Mes Produits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .bg-lg-blue { background-color: #1e3a8a; }
+        .product-active-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #f36f21; }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #f36f21; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <div class="bg-white p-4 flex items-center gap-4 border-b sticky top-0 z-50">
+        <a href="produit.html" class="text-gray-600"><i class="fa-solid fa-chevron-left"></i></a>
+        <h1 class="text-lg font-bold text-gray-900">Mes investissements</h1>
+    </div>
+
+    <div class="m-4 p-5 bg-lg-blue rounded-3xl text-white flex justify-between items-center shadow-lg">
+        <div>
+            <p class="text-[10px] opacity-70 uppercase font-bold tracking-widest">Revenu total généré</p>
+            <h2 id="totalRevenue" class="text-2xl font-black italic">FC 0</h2>
+        </div>
+        <div class="bg-white/10 p-3 rounded-2xl">
+            <i class="fa-solid fa-chart-line text-2xl text-orange-400"></i>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-4" id="myProductsList">
+        
+        <div id="emptyMessage" class="flex flex-col items-center justify-center py-24 text-center">
+            <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                <i class="fa-solid fa-box-open text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-gray-900 font-black uppercase text-sm tracking-widest">Aucun produit actif</h3>
+            <p class="text-gray-400 text-xs mt-2 px-10 font-medium">Vous n'avez pas encore loué de matériel LG. Commencez à générer des revenus dès maintenant.</p>
+            <a href="produit.html" class="mt-6 bg-[#a50034] text-white px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                Découvrir les produits
+            </a>
+        </div>
+
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Maison</span>
+        </a>
+        <a href="produit.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Produit</span>
+        </a>
+        <a href="equipe.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Équipe</span>
+        </a>
+        <a href="profil.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-user text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Le mien</span>
+        </a>
+    </nav>
+
+    <script>
+        // Cette fonction sera appelée par votre système Firebase 
+        // dès que l'utilisateur achète un VIP
+        function renderUserProducts(products) {
+            const list = document.getElementById('myProductsList');
+            const empty = document.getElementById('emptyMessage');
+            
+            if (products && products.length > 0) {
+                empty.classList.add('hidden');
+                // Logique pour injecter les cartes HTML ici
+            } else {
+                empty.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
