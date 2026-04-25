@@ -6,6 +6,8 @@
     <title>LG Investissement | Connexion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .input-border { border: 1px solid #e5e7eb; }
@@ -75,8 +77,66 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.css"></script>
 
-    <script type="module">
-        // La logique Firebase pour vérifier les identifiants ira ici
+    <script>
+        // CONFIGURATION CONGO PÉTROLE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", // Remplacez par votre clé réelle
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        // Initialisation
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+
+            btn.disabled = true;
+            btn.innerText = "CONNEXION EN COURS...";
+
+            // Vérifier les identifiants dans congo_petrole/users
+            database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', snapshot => {
+                if (snapshot.exists()) {
+                    let userFound = false;
+                    snapshot.forEach(childSnapshot => {
+                        const userData = childSnapshot.val();
+                        if (userData.password === password) {
+                            userFound = true;
+                            localStorage.setItem('userPhone', phone);
+                            window.location.href = "dashboard.html";
+                        }
+                    });
+
+                    if (!userFound) {
+                        alert("Mot de passe incorrect.");
+                        resetBtn();
+                    }
+                } else {
+                    alert("Ce numéro n'est pas enregistré.");
+                    resetBtn();
+                }
+            }).catch(error => {
+                alert("Erreur de connexion : " + error.message);
+                resetBtn();
+            });
+        });
+
+        function resetBtn() {
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = false;
+            btn.innerText = "SE CONNECTER";
+        }
     </script>
 </body>
 </html>
