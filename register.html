@@ -11,7 +11,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .input-border { border: 1px solid #e5e7eb; }
-        .lg-input:focus { border-color: #a1a1aa; outline: none; box-shadow: 0 0 0 1px #a1a1aa; }
+        .lg-input:focus { border-color: #1e3a8a; outline: none; box-shadow: 0 0 0 1px #1e3a8a; }
     </style>
 </head>
 <body class="bg-white min-h-screen flex flex-col justify-between">
@@ -48,21 +48,21 @@
             </div>
 
             <button type="submit" id="submitBtn" 
-                    class="w-full bg-black text-white p-5 rounded-full font-bold text-sm tracking-tight active:scale-98 transition-transform">
+                    class="w-full bg-black text-white p-5 rounded-full font-bold text-sm tracking-tight active:scale-95 transition-transform">
                 Créer un compte
             </button>
 
             <a href="index.html" 
-               class="block w-full text-center input-border text-gray-900 p-4 rounded-full font-bold text-sm tracking-tight active:scale-98 transition-transform">
+               class="block w-full text-center input-border text-gray-900 p-4 rounded-full font-bold text-sm tracking-tight active:scale-95 transition-transform">
                 J'ai déjà un compte, connectez-vous
             </a>
         </form>
     </div>
 
     <script>
-        // CONFIGURATION CONGO PÉTROLE
+        // CONFIGURATION FIREBASE
         const firebaseConfig = {
-            apiKey: "AIzaSy...", // Ta clé API
+            apiKey: "AIzaSy...", 
             authDomain: "firstsolar-e2ba3.firebaseapp.com",
             databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
             projectId: "firstsolar-e2ba3",
@@ -71,16 +71,30 @@
             appId: "VOTRE_APP_ID"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
+
+        // 1. LIRE LE CODE DANS L'URL (ex: register.html?c=ABCDEF)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeFromUrl = urlParams.get('c');
+            if (codeFromUrl) {
+                document.getElementById('inviteCode').value = codeFromUrl.toUpperCase();
+            }
+        };
+
+        // 2. GÉNÉRER UN CODE POUR LE NOUVEL UTILISATEUR
+        function generateCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
 
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const phone = document.getElementById('phone').value;
+            const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const inviteCode = document.getElementById('inviteCode').value;
+            const inviteCodeSaisi = document.getElementById('inviteCode').value.trim().toUpperCase();
             const btn = document.getElementById('submitBtn');
 
             if (password !== confirmPassword) {
@@ -89,33 +103,66 @@
             }
 
             btn.disabled = true;
-            btn.innerText = "INSCRIPTION EN COURS...";
+            btn.innerText = "VÉRIFICATION EN COURS...";
 
-            // Vérifier si le numéro existe déjà dans Congo Pétrole
-            database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', snapshot => {
-                if (snapshot.exists()) {
-                    alert("Ce numéro est déjà utilisé sur Congo Pétrole.");
+            // ÉTAPE A : Vérifier si le code d'invitation (Parrain) existe
+            database.ref('congo_petrole/users').orderByChild('inviteCode').equalTo(inviteCodeSaisi).once('value', snapshot => {
+                if (!snapshot.exists()) {
+                    alert("Code d'invitation invalide ou inexistant !");
                     btn.disabled = false;
                     btn.innerText = "CRÉER UN COMPTE";
-                } else {
-                    // Création du compte dans le dossier congo_petrole/users
+                    return;
+                }
+
+                let parrainKey = null;
+                let parrainData = null;
+                snapshot.forEach(child => {
+                    parrainKey = child.key;
+                    parrainData = child.val();
+                });
+
+                // ÉTAPE B : Vérifier si le numéro de téléphone est déjà pris
+                database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', userSnap => {
+                    if (userSnap.exists()) {
+                        alert("Ce numéro est déjà utilisé sur Congo Pétrole.");
+                        btn.disabled = false;
+                        btn.innerText = "CRÉER UN COMPTE";
+                        return;
+                    }
+
+                    // ÉTAPE C : Tout est bon, on crée le compte
+                    const monNouveauCode = generateCode();
                     const newUserRef = database.ref('congo_petrole/users').push();
+                    
                     newUserRef.set({
                         phone: phone,
                         password: password,
-                        inviteCode: inviteCode,
-                        solde: 1500, // Bonus de 1500 FC offert comme prévu
+                        inviteCode: monNouveauCode,
+                        parrain: inviteCodeSaisi,
+                        solde: 1500, // Bonus de bienvenue
                         revenu_cumule: 0,
+                        teamSize: 0,
+                        lvl1Count: 0,
+                        lvl2Count: 0,
+                        lvl3Count: 0,
                         dateInscription: new Date().toISOString()
                     }).then(() => {
-                        alert("Compte LG Invest créé avec succès !");
-                        localStorage.setItem('userPhone', phone);
-                        window.location.href = "dashboard.html";
+                        // ÉTAPE D : Mettre à jour les stats du parrain
+                        const updates = {};
+                        updates[`congo_petrole/users/${parrainKey}/teamSize`] = (parrainData.teamSize || 0) + 1;
+                        updates[`congo_petrole/users/${parrainKey}/lvl1Count`] = (parrainData.lvl1Count || 0) + 1;
+                        
+                        database.ref().update(updates).then(() => {
+                            alert("Compte créé avec succès ! Bonus de 1500 FC ajouté.");
+                            localStorage.setItem('userPhone', phone);
+                            window.location.href = "dashboard.html";
+                        });
                     }).catch(error => {
-                        alert("Erreur: " + error.message);
+                        alert("Erreur système : " + error.message);
                         btn.disabled = false;
+                        btn.innerText = "CRÉER UN COMPTE";
                     });
-                }
+                });
             });
         });
     </script>
