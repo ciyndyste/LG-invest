@@ -36,7 +36,7 @@
 
         <div class="bg-white rounded-xl p-4 flex items-center justify-between card-shadow">
             <div class="overflow-hidden mr-4">
-                <p id="inviteLink" class="text-sm font-bold text-gray-900 truncate italic">https://elec-invest.github.io/LG-invest/register.html?c=...</p>
+                <p id="inviteLink" class="text-sm font-bold text-gray-900 truncate italic italic">https://elec-invest.github.io/LG-invest/register.html?c=...</p>
                 <p class="text-xs text-gray-400 font-medium">Lien d'invitation</p>
             </div>
             <button onclick="copyText('inviteLink')" class="btn-copy active:scale-95 transition-transform">Copie</button>
@@ -46,36 +46,73 @@
             <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
                 <h3 id="teamSize" class="text-white text-2xl font-black">0</h3>
                 <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Taille de l'équipe</p>
-                <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
             </div>
             <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
-                <h3 id="teamIncome" class="text-white text-2xl font-black italic">FC 0.00</h3>
-                <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Revenu total de l'équipe</p>
-                <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
+                <h3 id="teamIncome" class="text-white text-2xl font-black italic">FC 0</h3>
+                <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Revenu total équipe</p>
             </div>
         </div>
 
-        <div class="space-y-3 mt-6">
-            <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
-                <div class="w-16 flex justify-center mr-4">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="w-12 h-12 object-contain" alt="Gold">
+        <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
+            <div class="w-12 mr-4 text-center">
+                <span class="text-xs font-black text-orange-500">LV1</span>
+            </div>
+            <div class="grid grid-cols-3 flex-grow text-center">
+                <div>
+                    <p class="text-gray-900 font-black text-lg">35%</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Com.</p>
                 </div>
-                <div class="grid grid-cols-3 flex-grow text-center">
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">35%</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Commission</p>
-                    </div>
-                    <div>
-                        <p id="lvl1Count" class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Valide</p>
-                    </div>
-                    <div>
-                        <p id="lvl1Income" class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
-                    </div>
+                <div>
+                    <p id="lvl1Count" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Membres</p>
+                </div>
+                <div>
+                    <p id="lvl1Income" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 flex items-center card-shadow border-l-4 border-gray-300">
+            <div class="w-12 mr-4 text-center">
+                <span class="text-xs font-black text-gray-500">LV2</span>
             </div>
+            <div class="grid grid-cols-3 flex-grow text-center">
+                <div>
+                    <p class="text-gray-900 font-black text-lg">3%</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Com.</p>
+                </div>
+                <div>
+                    <p id="lvl2Count" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Membres</p>
+                </div>
+                <div>
+                    <p id="lvl2Income" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 flex items-center card-shadow border-l-4 border-gray-200">
+            <div class="w-12 mr-4 text-center">
+                <span class="text-xs font-black text-gray-400">LV3</span>
+            </div>
+            <div class="grid grid-cols-3 flex-grow text-center">
+                <div>
+                    <p class="text-gray-900 font-black text-lg">1%</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Com.</p>
+                </div>
+                <div>
+                    <p id="lvl3Count" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Membres</p>
+                </div>
+                <div>
+                    <p id="lvl3Income" class="text-gray-900 font-black text-lg">0</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
@@ -98,7 +135,6 @@
     </nav>
 
     <script>
-        // CONFIGURATION CONGO PÉTROLE
         const firebaseConfig = {
             apiKey: "AIzaSy...", 
             authDomain: "firstsolar-e2ba3.firebaseapp.com",
@@ -113,23 +149,34 @@
         const database = firebase.database();
         const userPhone = localStorage.getItem('userPhone');
 
-        if (!userPhone) { window.location.href = "index.html"; }
-
-        // Récupérer les infos de l'utilisateur pour le code d'invitation
+        // Charger les données utilisateur et équipe
         database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', snapshot => {
-            if (snapshot.exists()) {
-                snapshot.forEach(child => {
-                    const code = child.val().inviteCode || "NON-DEFINI";
-                    document.getElementById('inviteCode').innerText = code;
-                    document.getElementById('inviteLink').innerText = `https://elec-invest.github.io/LG-invest/register.html?c=${code}`;
-                });
-            }
+            snapshot.forEach(child => {
+                const userData = child.val();
+                const code = userData.inviteCode || "ERREUR";
+                document.getElementById('inviteCode').innerText = code;
+                document.getElementById('inviteLink').innerText = `https://elec-invest.github.io/LG-invest/register.html?c=${code}`;
+                
+                // Stats globales
+                document.getElementById('teamSize').innerText = userData.teamSize || 0;
+                document.getElementById('teamIncome').innerText = 'FC ' + (userData.teamIncome || 0).toLocaleString();
+
+                // Stats par niveau
+                document.getElementById('lvl1Count').innerText = userData.lvl1Count || 0;
+                document.getElementById('lvl1Income').innerText = (userData.lvl1Income || 0).toLocaleString();
+
+                document.getElementById('lvl2Count').innerText = userData.lvl2Count || 0;
+                document.getElementById('lvl2Income').innerText = (userData.lvl2Income || 0).toLocaleString();
+
+                document.getElementById('lvl3Count').innerText = userData.lvl3Count || 0;
+                document.getElementById('lvl3Income').innerText = (userData.lvl3Income || 0).toLocaleString();
+            });
         });
 
         function copyText(elementId) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert("Copié : " + text);
+                alert("Copié !");
             });
         }
     </script>
