@@ -6,6 +6,8 @@
     <title>LG Invest | Recharge Sécurisée</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .step-hidden { display: none; }
@@ -73,16 +75,31 @@
 
         <div class="bg-white p-6 rounded-[2rem] shadow-sm space-y-4">
             <p class="text-xs font-black text-gray-400 uppercase">Confirmation du transfert</p>
-            <input type="text" id="senderPhone" placeholder="Votre numéro expéditeur" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-bold">
-            <input type="text" id="transactionId" placeholder="ID de transaction / ID de référence" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-bold">
+            <input type="number" id="senderPhone" placeholder="Votre numéro expéditeur (Ex: 082...)" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-bold">
+            <input type="text" id="transactionId" placeholder="ID de transaction (Reçu SMS)" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-bold">
             
-            <button onclick="submitRecharge()" class="w-full bg-[#a50034] text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-transform">
+            <button onclick="submitRecharge()" id="submitBtn" class="w-full bg-[#a50034] text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">
                 VALIDER LA RECHARGE
             </button>
         </div>
     </div>
 
     <script>
+        // CONFIGURATION CONGO PÉTROLE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const userPhone = localStorage.getItem('userPhone');
+
         let currentStep = 1;
         let rechargeData = { amount: 0, vip: '', network: '', target: '' };
 
@@ -103,7 +120,6 @@
             currentStep = step;
             document.getElementById(`step${currentStep}`).classList.remove('step-hidden');
             
-            // Mise à jour interface
             document.getElementById('stepTitle').innerText = `Recharger (${currentStep}/3)`;
             if(step === 2) {
                 document.getElementById('selectedAmountDisplay').innerText = `FC ${rechargeData.amount.toLocaleString()}`;
@@ -129,23 +145,35 @@
         function submitRecharge() {
             const sender = document.getElementById('senderPhone').value;
             const tid = document.getElementById('transactionId').value;
+            const btn = document.getElementById('submitBtn');
 
             if(!sender || !tid) {
-                alert("Veuillez remplir tous les champs de confirmation.");
+                alert("Veuillez remplir tous les champs.");
                 return;
             }
 
-            const payload = {
-                ...rechargeData,
-                senderPhone: sender,
-                transactionID: tid,
-                status: 'En attente',
-                date: new Date().toLocaleString()
-            };
+            btn.disabled = true;
+            btn.innerText = "ENVOI EN COURS...";
 
-            console.log("Données envoyées à l'admin:", payload);
-            alert("Demande envoyée avec succès ! Votre solde sera mis à jour après vérification par l'administrateur.");
-            window.location.href = 'dashboard.html';
+            // Enregistrement dans la console "Congo Pétrole"
+            const rechargeRef = database.ref('congo_petrole/recharges_en_attente').push();
+            rechargeRef.set({
+                userPhone: userPhone,
+                montant: rechargeData.amount,
+                vip: rechargeData.vip,
+                reseau: rechargeData.network,
+                numeroExpediteur: sender,
+                transactionID: tid,
+                date: new Date().toISOString(),
+                status: "En attente"
+            }).then(() => {
+                alert("Demande envoyée ! Votre compte sera crédité après vérification.");
+                window.location.href = 'dashboard.html';
+            }).catch(err => {
+                alert("Erreur de connexion.");
+                btn.disabled = false;
+                btn.innerText = "VALIDER LA RECHARGE";
+            });
         }
     </script>
 </body>
