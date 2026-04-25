@@ -6,6 +6,8 @@
     <title>LG Invest | Équipe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .bg-lg-blue { background-color: #1e3a8a; }
@@ -26,7 +28,7 @@
         
         <div class="bg-white rounded-xl p-4 flex items-center justify-between card-shadow">
             <div>
-                <p id="inviteCode" class="text-lg font-black text-gray-900">5I5F63</p>
+                <p id="inviteCode" class="text-lg font-black text-gray-900">Chargement...</p>
                 <p class="text-xs text-gray-400 font-medium">Code d'invitation</p>
             </div>
             <button onclick="copyText('inviteCode')" class="btn-copy active:scale-95 transition-transform">Copie</button>
@@ -34,7 +36,7 @@
 
         <div class="bg-white rounded-xl p-4 flex items-center justify-between card-shadow">
             <div class="overflow-hidden mr-4">
-                <p id="inviteLink" class="text-sm font-bold text-gray-900 truncate">https://lg-invest.com/register.html?c=5I5F63</p>
+                <p id="inviteLink" class="text-sm font-bold text-gray-900 truncate italic">https://elec-invest.github.io/LG-invest/register.html?c=...</p>
                 <p class="text-xs text-gray-400 font-medium">Lien d'invitation</p>
             </div>
             <button onclick="copyText('inviteLink')" class="btn-copy active:scale-95 transition-transform">Copie</button>
@@ -42,19 +44,18 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
-                <h3 class="text-white text-2xl font-black">0</h3>
+                <h3 id="teamSize" class="text-white text-2xl font-black">0</h3>
                 <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Taille de l'équipe</p>
                 <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
             </div>
             <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
-                <h3 class="text-white text-2xl font-black italic">FC 0.00</h3>
+                <h3 id="teamIncome" class="text-white text-2xl font-black italic">FC 0.00</h3>
                 <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Revenu total de l'équipe</p>
                 <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
             </div>
         </div>
 
         <div class="space-y-3 mt-6">
-            
             <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
                 <div class="w-16 flex justify-center mr-4">
                     <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="w-12 h-12 object-contain" alt="Gold">
@@ -62,60 +63,19 @@
                 <div class="grid grid-cols-3 flex-grow text-center">
                     <div>
                         <p class="text-gray-900 font-black text-lg">35%</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Taux de commission</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">Commission</p>
                     </div>
                     <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Utilisateur valide</p>
+                        <p id="lvl1Count" class="text-gray-900 font-black text-lg">0</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">Valide</p>
                     </div>
                     <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
+                        <p id="lvl1Income" class="text-gray-900 font-black text-lg">0</p>
                         <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
                     </div>
                 </div>
             </div>
-
-            <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
-                <div class="w-16 flex justify-center mr-4">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583319.png" class="w-12 h-12 object-contain" alt="Platinum">
-                </div>
-                <div class="grid grid-cols-3 flex-grow text-center">
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">2%</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Taux de commission</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Utilisateur valide</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
-                    </div>
-                </div>
             </div>
-
-            <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
-                <div class="w-16 flex justify-center mr-4">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583434.png" class="w-12 h-12 object-contain" alt="Diamond">
-                </div>
-                <div class="grid grid-cols-3 flex-grow text-center">
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">1%</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Taux de commission</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Utilisateur valide</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
@@ -138,10 +98,38 @@
     </nav>
 
     <script>
+        // CONFIGURATION CONGO PÉTROLE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const userPhone = localStorage.getItem('userPhone');
+
+        if (!userPhone) { window.location.href = "index.html"; }
+
+        // Récupérer les infos de l'utilisateur pour le code d'invitation
+        database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', snapshot => {
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    const code = child.val().inviteCode || "NON-DEFINI";
+                    document.getElementById('inviteCode').innerText = code;
+                    document.getElementById('inviteLink').innerText = `https://elec-invest.github.io/LG-invest/register.html?c=${code}`;
+                });
+            }
+        });
+
         function copyText(elementId) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert("Copié dans le presse-papier !");
+                alert("Copié : " + text);
             });
         }
     </script>
