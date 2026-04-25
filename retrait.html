@@ -6,6 +6,8 @@
     <title>LG Invest | Retrait</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .bg-lg-blue { background-color: #1e3a8a; }
@@ -23,14 +25,13 @@
 
     <div class="m-4 p-6 bg-lg-blue rounded-[2rem] shadow-xl relative overflow-hidden">
         <div class="relative z-10">
-            <p class="text-white/70 text-xs font-bold uppercase tracking-widest">Solde actuel</p>
-            <h2 class="text-white text-3xl font-black italic mt-1">FC 15,000</h2>
+            <p class="text-white/70 text-xs font-bold uppercase tracking-widest">Solde disponible</p>
+            <h2 id="currentBalance" class="text-white text-3xl font-black italic mt-1">FC 0</h2>
         </div>
         <i class="fa-solid fa-money-bill-transfer absolute -right-4 -bottom-4 text-white/10 text-8xl"></i>
     </div>
 
     <div class="p-4 space-y-6">
-        
         <div class="bg-white p-6 rounded-[2rem] card-shadow space-y-5">
             <div>
                 <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 ml-1">Montant à retirer (FC)</label>
@@ -41,11 +42,11 @@
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-gray-200 flex justify-between items-center">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase">Frais de service (15%)</p>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase">Frais (15%)</p>
                     <p id="feeDisplay" class="font-black text-gray-700 italic">FC 0</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] font-bold text-[#a50034] uppercase">Vous recevrez</p>
+                    <p class="text-[10px] font-bold text-[#a50034] uppercase">Net à recevoir</p>
                     <p id="finalDisplay" class="font-black text-[#a50034] text-xl italic">FC 0</p>
                 </div>
             </div>
@@ -60,46 +61,49 @@
             </div>
 
             <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 ml-1">Numéro bénéficiaire</label>
-                <input type="tel" id="beneficiaryPhone" placeholder="Ex: 0812345678" 
+                <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 ml-1">Numéro de réception</label>
+                <input type="tel" id="beneficiaryPhone" placeholder="Ex: 0820000000" 
                        class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold">
             </div>
 
-            <button onclick="processWithdrawal()" class="w-full bg-[#a50034] text-white p-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-transform">
+            <button onclick="processWithdrawal()" id="btnWith" class="w-full bg-[#a50034] text-white p-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all">
                 Confirmer le retrait
             </button>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-gray-100 space-y-3">
-            <h4 class="text-xs font-black text-gray-900 uppercase italic underline decoration-red-500">Note de retrait</h4>
-            <div class="space-y-2">
-                <div class="flex items-start gap-2 text-[11px] text-gray-500 font-medium">
-                    <i class="fa-solid fa-check text-green-500 mt-0.5"></i>
-                    <p>Montant minimum : <b>5,000 FC</b></p>
-                </div>
-                <div class="flex items-start gap-2 text-[11px] text-gray-500 font-medium">
-                    <i class="fa-solid fa-check text-green-500 mt-0.5"></i>
-                    <p>Frais de retrait fixe : <b>15%</b></p>
-                </div>
-                <div class="flex items-start gap-2 text-[11px] text-gray-500 font-medium">
-                    <i class="fa-solid fa-check text-green-500 mt-0.5"></i>
-                    <p>Limite de fréquence : <b>1 retrait par jour</b></p>
-                </div>
-                <div class="flex items-start gap-2 text-[11px] text-gray-500 font-medium">
-                    <i class="fa-solid fa-clock text-blue-500 mt-0.5"></i>
-                    <p>Arrivée des fonds : entre <b>1h et 24h</b> après validation.</p>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
+        // CONFIGURATION FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "firstsolar-e2ba3.firebaseapp.com",
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
+            projectId: "firstsolar-e2ba3",
+            storageBucket: "firstsolar-e2ba3.appspot.com",
+            messagingSenderId: "1036814046187",
+            appId: "VOTRE_APP_ID"
+        };
+
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const database = firebase.database();
+        const userPhone = localStorage.getItem('userPhone');
+        let globalSolde = 0;
+        let lastWithdrawDate = "";
+
+        // Charger le solde et la date du dernier retrait
+        database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', snapshot => {
+            snapshot.forEach(child => {
+                globalSolde = child.val().solde || 0;
+                lastWithdrawDate = child.val().dernierRetrait || "";
+                document.getElementById('currentBalance').innerText = 'FC ' + globalSolde.toLocaleString();
+            });
+        });
+
         function calculateFees() {
             const amountInput = document.getElementById('withdrawAmount');
             const errorMsg = document.getElementById('minError');
             const amount = parseFloat(amountInput.value) || 0;
             
-            // Vérification du minimum 5000
             if (amount > 0 && amount < 5000) {
                 amountInput.classList.add('error-border');
                 errorMsg.classList.remove('hidden');
@@ -110,28 +114,51 @@
 
             const fee = amount * 0.15;
             const net = amount - fee;
-
             document.getElementById('feeDisplay').innerText = `FC ${fee.toLocaleString()}`;
             document.getElementById('finalDisplay').innerText = `FC ${net > 0 ? net.toLocaleString() : 0}`;
         }
 
         function processWithdrawal() {
-            const amount = document.getElementById('withdrawAmount').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
             const phone = document.getElementById('beneficiaryPhone').value;
+            const operator = document.getElementById('operator').value;
+            const today = new Date().toISOString().split('T')[0];
 
-            if (amount < 5000) {
-                alert("Erreur : Le montant minimum de retrait est de 5,000 FC.");
-                return;
-            }
+            if (amount < 5000) return alert("Minimum 5,000 FC requis.");
+            if (amount > globalSolde) return alert("Solde insuffisant.");
+            if (!phone) return alert("Numéro requis.");
+            if (lastWithdrawDate === today) return alert("Limite atteinte : 1 seul retrait par jour autorisé.");
 
-            if (!phone) {
-                alert("Veuillez saisir le numéro de réception.");
-                return;
-            }
+            if (!confirm(`Confirmer le retrait de FC ${amount} vers ${phone} ?`)) return;
 
-            // Ici vous ajouterez la vérification Firebase (1 retrait/jour)
-            alert("Votre demande de retrait de " + amount + " FC est en cours de traitement.");
-            window.location.href = 'profil.html';
+            const btn = document.getElementById('btnWith');
+            btn.disabled = true;
+            btn.innerText = "TRAITEMENT...";
+
+            // 1. Déduire le solde et mettre à jour la date
+            database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).once('value', snapshot => {
+                snapshot.forEach(child => {
+                    child.ref.update({ 
+                        solde: globalSolde - amount,
+                        dernierRetrait: today 
+                    });
+                });
+
+                // 2. Enregistrer la demande pour l'admin
+                database.ref('congo_petrole/retraits_en_attente').push({
+                    userPhone: userPhone,
+                    montantBrut: amount,
+                    frais: amount * 0.15,
+                    montantNet: amount * 0.85,
+                    reseau: operator,
+                    numeroReception: phone,
+                    date: new Date().toLocaleString(),
+                    status: "En attente"
+                }).then(() => {
+                    alert("Demande envoyée ! Vous recevrez vos fonds d'ici 1h à 24h.");
+                    window.location.href = 'profil.html';
+                });
+            });
         }
     </script>
 </body>
