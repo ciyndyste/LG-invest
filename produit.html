@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LG Invest | Produits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .bg-lg-blue { background-color: #1e3a8a; }
+        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .btn-buy { background: #f36f21; color: white; transition: 0.3s; }
+        .btn-buy:active { scale: 0.95; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div class="relative h-60 bg-lg-blue overflow-hidden">
+        <img src="IMG_4253.jpeg" class="absolute inset-0 w-full h-full object-cover opacity-30">
+        <div class="absolute inset-0 p-6 flex flex-col justify-end">
+            <div class="flex gap-4 mb-4">
+                <div onclick="window.location.href='mes_produits.html'" class="bg-white/20 backdrop-blur-md rounded-xl p-3 flex-1 border border-white/10 cursor-pointer active:bg-white/30">
+                    <p class="text-white text-[10px] uppercase font-bold opacity-80">Total des produits</p>
+                    <p class="text-white text-xl font-black" id="totalProductsCount">0</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-md rounded-xl p-3 flex-1 border border-white/10">
+                    <p class="text-white text-[10px] uppercase font-bold opacity-80">Bénéfice du produit</p>
+                    <p class="text-white text-xl font-black" id="totalProfit">FC 0</p>
+                </div>
+            </div>
+            <h2 class="text-white font-black italic tracking-widest uppercase">LG ELECTRICAL APPLIANCES</h2>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-4" id="productList">
+        
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4247.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 1</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 20 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 4 600</span></p>
+                    <p>Total: <span class="text-orange-600">FC 207 000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4248.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 2</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 40 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 9 200</span></p>
+                    <p>Total: <span class="text-orange-600">FC 414 000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4249.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 3</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 75 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 17 250</span></p>
+                    <p>Total: <span class="text-orange-600">FC 776 250</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4255.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 4</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 120 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 27 600</span></p>
+                    <p>Total: <span class="text-orange-600">FC 1 242 000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4256.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 5</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 250 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 57 500</span></p>
+                    <p>Total: <span class="text-orange-600">FC 2 587 500</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4257.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 6</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 400 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 92 000</span></p>
+                    <p>Total: <span class="text-orange-600">FC 4 140 000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4258.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 7</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 800 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 184 000</span></p>
+                    <p>Total: <span class="text-orange-600">FC 8 280 000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card p-4 flex gap-4 items-center">
+            <img src="IMG_4253.jpeg" class="w-24 h-24 object-contain bg-gray-50 rounded-lg p-1">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xl font-black text-orange-600 italic tracking-tighter">VIP 8</h3>
+                    <button class="btn-buy px-5 py-1.5 rounded-full text-xs font-black uppercase">Acheter</button>
+                </div>
+                <div class="text-[11px] grid grid-cols-2 gap-y-1 font-bold text-gray-500">
+                    <p>Prix: <span class="text-orange-600">FC 1 200 000</span></p>
+                    <p>Durée: <span class="text-orange-600">45 Jours</span></p>
+                    <p>Journalier: <span class="text-orange-600">FC 276 000</span></p>
+                    <p>Total: <span class="text-orange-600">FC 12 420 000</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-lg-blue border-t border-white/10 flex justify-around p-3 z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Maison</span>
+        </a>
+        <a href="produit.html" class="flex flex-col items-center gap-1 text-orange-500">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Produit</span>
+        </a>
+        <a href="equipe.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-gift text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Équipe</span>
+        </a>
+        <a href="profil.html" class="flex flex-col items-center gap-1 text-white/50">
+            <i class="fa-solid fa-user text-xl"></i>
+            <span class="text-[10px] font-bold uppercase">Le mien</span>
+        </a>
+    </nav>
+
+    <script type="module">
+        // Ici viendra la logique Firebase pour compter les produits réellement achetés
+        // et les afficher dans #totalProductsCount
+    </script>
+</body>
+</html>
