@@ -60,7 +60,6 @@
     </div>
 
     <script>
-        // CONFIGURATION FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSy...", 
             authDomain: "firstsolar-e2ba3.firebaseapp.com",
@@ -74,7 +73,6 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
 
-        // 1. LIRE LE CODE DANS L'URL (ex: register.html?c=ABCDEF)
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const codeFromUrl = urlParams.get('c');
@@ -83,7 +81,6 @@
             }
         };
 
-        // 2. GÉNÉRER UN CODE POUR LE NOUVEL UTILISATEUR
         function generateCode() {
             return Math.random().toString(36).substring(2, 8).toUpperCase();
         }
@@ -105,60 +102,100 @@
             btn.disabled = true;
             btn.innerText = "VÉRIFICATION EN COURS...";
 
-            // ÉTAPE A : Vérifier si le code d'invitation (Parrain) existe
+            // 1. Vérifier si le parrain existe (Code d'invitation)
             database.ref('congo_petrole/users').orderByChild('inviteCode').equalTo(inviteCodeSaisi).once('value', snapshot => {
-                if (!snapshot.exists()) {
-                    alert("Code d'invitation invalide ou inexistant !");
+                
+                // Autoriser le code maître "GHEHEZ" pour le tout premier utilisateur
+                if (!snapshot.exists() && inviteCodeSaisi !== "GHEHEZ") {
+                    alert("Code d'invitation invalide !");
                     btn.disabled = false;
                     btn.innerText = "CRÉER UN COMPTE";
                     return;
                 }
 
-                let parrainKey = null;
-                let parrainData = null;
-                snapshot.forEach(child => {
-                    parrainKey = child.key;
-                    parrainData = child.val();
-                });
+                let parrainLvl1 = null; 
+                let parrainLvl1Key = null;
 
-                // ÉTAPE B : Vérifier si le numéro de téléphone est déjà pris
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        parrainLvl1Key = child.key;
+                        parrainLvl1 = child.val();
+                    });
+                }
+
+                // 2. Vérifier si le numéro de téléphone existe déjà
                 database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', userSnap => {
                     if (userSnap.exists()) {
-                        alert("Ce numéro est déjà utilisé sur Congo Pétrole.");
+                        alert("Ce numéro est déjà utilisé.");
                         btn.disabled = false;
                         btn.innerText = "CRÉER UN COMPTE";
                         return;
                     }
 
-                    // ÉTAPE C : Tout est bon, on crée le compte
                     const monNouveauCode = generateCode();
                     const newUserRef = database.ref('congo_petrole/users').push();
                     
-                    newUserRef.set({
+                    // Données du nouvel utilisateur
+                    const userData = {
                         phone: phone,
                         password: password,
                         inviteCode: monNouveauCode,
                         parrain: inviteCodeSaisi,
-                        solde: 1500, // Bonus de bienvenue
+                        parrainId: parrainLvl1Key || "SYSTEM",
+                        solde: 1500,
                         revenu_cumule: 0,
                         teamSize: 0,
                         lvl1Count: 0,
                         lvl2Count: 0,
                         lvl3Count: 0,
                         dateInscription: new Date().toISOString()
-                    }).then(() => {
-                        // ÉTAPE D : Mettre à jour les stats du parrain
+                    };
+
+                    newUserRef.set(userData).then(() => {
                         const updates = {};
-                        updates[`congo_petrole/users/${parrainKey}/teamSize`] = (parrainData.teamSize || 0) + 1;
-                        updates[`congo_petrole/users/${parrainKey}/lvl1Count`] = (parrainData.lvl1Count || 0) + 1;
+
+                        // MISE À JOUR DU PARRAIN DIRECT (Niveau 1)
+                        if (parrainLvl1Key) {
+                            updates[`congo_petrole/users/${parrainLvl1Key}/teamSize`] = (parrainLvl1.teamSize || 0) + 1;
+                            updates[`congo_petrole/users/${parrainLvl1Key}/lvl1Count`] = (parrainLvl1.lvl1Count || 0) + 1;
+
+                            // MISE À JOUR DU PARRAIN NIVEAU 2 (Le parrain du parrain)
+                            if (parrainLvl1.parrainId && parrainLvl1.parrainId !== "SYSTEM") {
+                                database.ref(`congo_petrole/users/${parrainLvl1.parrainId}`).once('value', snap2 => {
+                                    if (snap2.exists()) {
+                                        const p2 = snap2.val();
+                                        updates[`congo_petrole/users/${parrainLvl1.parrainId}/teamSize`] = (p2.teamSize || 0) + 1;
+                                        updates[`congo_petrole/users/${parrainLvl1.parrainId}/lvl2Count`] = (p2.lvl2Count || 0) + 1;
+
+                                        // MISE À JOUR DU PARRAIN NIVEAU 3
+                                        if (p2.parrainId && p2.parrainId !== "SYSTEM") {
+                                            database.ref(`congo_petrole/users/${p2.parrainId}`).once('value', snap3 => {
+                                                if (snap3.exists()) {
+                                                    const p3 = snap3.val();
+                                                    updates[`congo_petrole/users/${p2.parrainId}/teamSize`] = (p3.teamSize || 0) + 1;
+                                                    updates[`congo_petrole/users/${p2.parrainId}/lvl3Count`] = (p3.lvl3Count || 0) + 1;
+                                                }
+                                                // Exécution finale des mises à jour ramifiées
+                                                database.ref().update(updates);
+                                            });
+                                        } else {
+                                            database.ref().update(updates);
+                                        }
+                                    } else {
+                                        database.ref().update(updates);
+                                    }
+                                });
+                            } else {
+                                database.ref().update(updates);
+                            }
+                        }
+
+                        alert("Compte créé ! Votre code est : " + monNouveauCode);
+                        localStorage.setItem('userPhone', phone);
+                        window.location.href = "dashboard.html";
                         
-                        database.ref().update(updates).then(() => {
-                            alert("Compte créé avec succès ! Bonus de 1500 FC ajouté.");
-                            localStorage.setItem('userPhone', phone);
-                            window.location.href = "dashboard.html";
-                        });
                     }).catch(error => {
-                        alert("Erreur système : " + error.message);
+                        alert("Erreur : " + error.message);
                         btn.disabled = false;
                         btn.innerText = "CRÉER UN COMPTE";
                     });
