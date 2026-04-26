@@ -44,7 +44,7 @@
 
             <div class="input-border rounded-xl p-4 flex items-center bg-white">
                 <input type="text" id="inviteCode" placeholder="Code d'invitation" 
-                       class="w-full text-sm font-medium text-gray-900 uppercase focus:outline-none lg-input" required>
+                       class="w-full text-sm font-medium text-gray-900 focus:outline-none lg-input" required>
             </div>
 
             <button type="submit" id="submitBtn" 
@@ -77,12 +77,14 @@
             const urlParams = new URLSearchParams(window.location.search);
             const codeFromUrl = urlParams.get('c');
             if (codeFromUrl) {
-                document.getElementById('inviteCode').value = codeFromUrl.toUpperCase();
+                // Conversion en minuscules lors de la lecture de l'URL
+                document.getElementById('inviteCode').value = codeFromUrl.toLowerCase();
             }
         };
 
         function generateCode() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
+            // Le nouveau code de l'utilisateur sera généré en minuscules
+            return Math.random().toString(36).substring(2, 8).toLowerCase();
         }
 
         document.getElementById('registerForm').addEventListener('submit', function(e) {
@@ -91,7 +93,8 @@
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const inviteCodeSaisi = document.getElementById('inviteCode').value.trim().toUpperCase();
+            // Conversion systématique en minuscules pour la recherche
+            const inviteCodeSaisi = document.getElementById('inviteCode').value.trim().toLowerCase();
             const btn = document.getElementById('submitBtn');
 
             if (password !== confirmPassword) {
@@ -102,11 +105,11 @@
             btn.disabled = true;
             btn.innerText = "VÉRIFICATION EN COURS...";
 
-            // 1. Vérifier si le parrain existe (Code d'invitation)
+            // 1. Recherche du parrain avec le code en minuscules
             database.ref('congo_petrole/users').orderByChild('inviteCode').equalTo(inviteCodeSaisi).once('value', snapshot => {
                 
-                // Autoriser le code maître "GHEHEZ" pour le tout premier utilisateur
-                if (!snapshot.exists() && inviteCodeSaisi !== "GHEHEZ") {
+                // Vérification du code maître également en minuscules
+                if (!snapshot.exists() && inviteCodeSaisi !== "ghehez") {
                     alert("Code d'invitation invalide !");
                     btn.disabled = false;
                     btn.innerText = "CRÉER UN COMPTE";
@@ -123,7 +126,6 @@
                     });
                 }
 
-                // 2. Vérifier si le numéro de téléphone existe déjà
                 database.ref('congo_petrole/users').orderByChild('phone').equalTo(phone).once('value', userSnap => {
                     if (userSnap.exists()) {
                         alert("Ce numéro est déjà utilisé.");
@@ -132,14 +134,13 @@
                         return;
                     }
 
-                    const monNouveauCode = generateCode();
+                    const monNouveauCode = generateCode(); // Généré en minuscules
                     const newUserRef = database.ref('congo_petrole/users').push();
                     
-                    // Données du nouvel utilisateur
                     const userData = {
                         phone: phone,
                         password: password,
-                        inviteCode: monNouveauCode,
+                        inviteCode: monNouveauCode, // Stocké en minuscules
                         parrain: inviteCodeSaisi,
                         parrainId: parrainLvl1Key || "SYSTEM",
                         solde: 1500,
@@ -154,12 +155,10 @@
                     newUserRef.set(userData).then(() => {
                         const updates = {};
 
-                        // MISE À JOUR DU PARRAIN DIRECT (Niveau 1)
                         if (parrainLvl1Key) {
                             updates[`congo_petrole/users/${parrainLvl1Key}/teamSize`] = (parrainLvl1.teamSize || 0) + 1;
                             updates[`congo_petrole/users/${parrainLvl1Key}/lvl1Count`] = (parrainLvl1.lvl1Count || 0) + 1;
 
-                            // MISE À JOUR DU PARRAIN NIVEAU 2 (Le parrain du parrain)
                             if (parrainLvl1.parrainId && parrainLvl1.parrainId !== "SYSTEM") {
                                 database.ref(`congo_petrole/users/${parrainLvl1.parrainId}`).once('value', snap2 => {
                                     if (snap2.exists()) {
@@ -167,7 +166,6 @@
                                         updates[`congo_petrole/users/${parrainLvl1.parrainId}/teamSize`] = (p2.teamSize || 0) + 1;
                                         updates[`congo_petrole/users/${parrainLvl1.parrainId}/lvl2Count`] = (p2.lvl2Count || 0) + 1;
 
-                                        // MISE À JOUR DU PARRAIN NIVEAU 3
                                         if (p2.parrainId && p2.parrainId !== "SYSTEM") {
                                             database.ref(`congo_petrole/users/${p2.parrainId}`).once('value', snap3 => {
                                                 if (snap3.exists()) {
@@ -175,7 +173,6 @@
                                                     updates[`congo_petrole/users/${p2.parrainId}/teamSize`] = (p3.teamSize || 0) + 1;
                                                     updates[`congo_petrole/users/${p2.parrainId}/lvl3Count`] = (p3.lvl3Count || 0) + 1;
                                                 }
-                                                // Exécution finale des mises à jour ramifiées
                                                 database.ref().update(updates);
                                             });
                                         } else {
