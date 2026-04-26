@@ -2,136 +2,326 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LG Invest | Équipe</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profil - LG Invest</title>
+    
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .bg-lg-blue { background-color: #1e3a8a; }
-        .card-shadow { box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .btn-copy { background-color: black; color: white; font-size: 12px; font-weight: bold; border-radius: 8px; padding: 8px 24px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        /* --- En-tête --- */
+        .header {
+            background-color: white;
+            padding: 20px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info p {
+            font-size: 13px;
+            color: #000;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .user-info h2 {
+            font-size: 16px;
+            color: #000;
+            font-weight: 700;
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: 900;
+            color: #1d438a; 
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .lg-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #c40045;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* --- Actions rapides --- */
+        .quick-actions {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        .action-item {
+            text-align: center;
+            cursor: pointer;
+            width: 33%;
+        }
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .action-item span {
+            display: block;
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* --- Cartes de Solde --- */
+        .balance-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px 15px 15px;
+        }
+        .balance-card {
+            background: linear-gradient(135deg, #2b2d2f 0%, #1a1a1b 100%);
+            color: white;
+            width: 48%;
+            border-radius: 12px;
+            padding: 20px 15px;
+        }
+        .balance-card h3 {
+            font-size: 16px;
+            margin-bottom: 25px;
+            font-weight: normal;
+        }
+        .balance-card p {
+            font-size: 12px;
+            color: #e0e0e0;
+        }
+
+        /* --- Menu Liste --- */
+        .menu-list {
+            background-color: white;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-icon-wrapper {
+            width: 30px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-right: 10px;
+        }
+        .menu-text {
+            flex-grow: 1;
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* --- Barre de navigation bas --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1d438a;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+        .nav-item {
+            text-align: center;
+            color: #a4b7dd;
+            text-decoration: none;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-item.active {
+            color: white;
+        }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
-<body class="pb-32">
+<body>
 
-    <div class="bg-white p-4 flex justify-center border-b border-gray-100 sticky top-0 z-40">
-        <div class="flex items-center gap-1">
-            <div class="w-8 h-8 bg-[#a50034] rounded-full flex items-center justify-center font-bold text-white text-xs">L</div>
-            <h1 class="text-xl font-black uppercase text-[#a50034]">LG <span class="font-normal text-gray-400">Invest</span></h1>
+    <header class="header">
+        <div class="user-info">
+            <p>Numéro de téléphone</p>
+            <h2 id="displayPhone">Chargement...</h2>
+        </div>
+        <div class="logo">
+            <span class="lg-icon"></span> LG
+        </div>
+    </header>
+
+    <div class="quick-actions">
+        <div class="action-item" onclick="window.location.href='recharge.html'">
+            <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="#cb262c" width="100%" height="100%">
+                    <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+                    <rect x="2" y="10" width="20" height="2" fill="white"></rect>
+                    <rect x="15" y="14" width="4" height="2" fill="white" rx="1"></rect>
+                </svg>
+            </div>
+            <span>Dépôt en ligne</span>
+        </div>
+        <div class="action-item" onclick="window.location.href='retrait.html'">
+            <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="#cb262c" width="100%" height="100%">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 6v12M9 9h4.5a2.5 2.5 0 010 5H10.5a2.5 2.5 0 000 5H15" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"></path>
+                </svg>
+            </div>
+            <span>Retirer de l'argent</span>
+        </div>
+        <div class="action-item" onclick="window.location.href='index.html'">
+            <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="#cb262c" width="100%" height="100%">
+                    <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+                    <path d="M4 10h16" stroke="white" stroke-width="2"></path>
+                    <line x1="8" y1="4" x2="8" y2="8" stroke="#cb262c" stroke-width="2" stroke-linecap="round"></line>
+                    <line x1="16" y1="4" x2="16" y2="8" stroke="#cb262c" stroke-width="2" stroke-linecap="round"></line>
+                    <rect x="8" y="13" width="8" height="4" fill="white" rx="1"></rect>
+                </svg>
+            </div>
+            <span>Enregistrer</span>
         </div>
     </div>
 
-    <div class="p-4 space-y-4">
+    <div class="balance-container">
+        <div class="balance-card">
+            <h3 id="displayBalance">FC 0</h3>
+            <p>Solde du compte</p>
+        </div>
+        <div class="balance-card">
+            <h3 id="displayRevenue">FC 0.00</h3>
+            <p>Revenu cumulé</p>
+        </div>
+    </div>
+
+    <div class="menu-list">
+        <div class="menu-item" onclick="window.location.href='mes_produits.html'">
+            <div class="menu-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="#eebd51" width="22" height="22">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 7v10M10 9.5h3a1.5 1.5 0 010 3h-2a1.5 1.5 0 000 3h3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+                </svg>
+            </div>
+            <span class="menu-text">Le produit que vous avez acheté</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
         
-        <div class="bg-white rounded-xl p-4 flex items-center justify-between card-shadow">
-            <div>
-                <p id="inviteCode" class="text-lg font-black text-gray-900">Chargement...</p>
-                <p class="text-xs text-gray-400 font-medium">Code d'invitation</p>
+        <div class="menu-item" onclick="window.location.href='a_propos.html'">
+            <div class="menu-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="#555" width="22" height="22">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="8" r="1.5" fill="white"></circle>
+                    <line x1="12" y1="11" x2="12" y2="17" stroke="white" stroke-width="2" stroke-linecap="round"></line>
+                </svg>
             </div>
-            <button onclick="copyText('inviteCode')" class="btn-copy active:scale-95 transition-transform">Copie</button>
+            <span class="menu-text">À propos de nous</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
 
-        <div class="bg-white rounded-xl p-4 flex items-center justify-between card-shadow">
-            <div class="overflow-hidden mr-4">
-                <p id="inviteLink" class="text-sm font-bold text-gray-900 truncate italic">https://elec-invest.github.io/LG-invest/register.html?c=...</p>
-                <p class="text-xs text-gray-400 font-medium">Lien d'invitation</p>
+        <div class="menu-item" onclick="window.location.href='regles.html'">
+            <div class="menu-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="#555" width="22" height="22">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="10,8 16,12 10,16" fill="white"></polygon>
+                </svg>
             </div>
-            <button onclick="copyText('inviteLink')" class="btn-copy active:scale-95 transition-transform">Copie</button>
+            <span class="menu-text">Règles de la plateforme</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
-                <h3 id="teamSize" class="text-white text-2xl font-black">0</h3>
-                <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Taille de l'équipe</p>
-                <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
+        <div class="menu-item" onclick="window.location.href='#'">
+            <div class="menu-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                    <path d="M18 16a6 6 0 00-12 0v2h12v-2z"></path>
+                    <path d="M12 10a4 4 0 100-8 4 4 0 000 8z"></path>
+                    <path d="M6 14v1a4 4 0 004 4h4a4 4 0 004-4v-1"></path>
+                </svg>
             </div>
-            <div class="bg-[#1a1a1a] p-5 rounded-2xl relative overflow-hidden h-28 flex flex-col justify-end border-b-4 border-gray-700">
-                <h3 id="teamIncome" class="text-white text-2xl font-black italic">FC 0.00</h3>
-                <p class="text-white/60 text-[10px] font-bold uppercase tracking-wider">Revenu total de l'équipe</p>
-                <i class="fa-solid fa-angles-right absolute top-4 right-4 text-white/30 text-xs"></i>
-            </div>
+            <span class="menu-text">Service client</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
 
-        <div class="space-y-3 mt-6">
-            <div class="bg-white rounded-xl p-4 flex items-center card-shadow">
-                <div class="w-16 flex justify-center mr-4">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="w-12 h-12 object-contain" alt="Gold">
-                </div>
-                <div class="grid grid-cols-3 flex-grow text-center">
-                    <div>
-                        <p class="text-gray-900 font-black text-lg">35%</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Commission</p>
-                    </div>
-                    <div>
-                        <p id="lvl1Count" class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Valide</p>
-                    </div>
-                    <div>
-                        <p id="lvl1Income" class="text-gray-900 font-black text-lg">0</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">Revenu</p>
-                    </div>
-                </div>
+        <div class="menu-item" onclick="window.location.href='historique.html'">
+            <div class="menu-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
             </div>
-            </div>
+            <span class="menu-text">Historique du compte</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#1e3a8a] border-t border-white/10 flex justify-around p-3 z-50">
-        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-white/50">
-            <i class="fa-solid fa-house text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Maison</span>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>Maison</span>
         </a>
-        <a href="produit.html" class="flex flex-col items-center gap-1 text-white/50">
-            <i class="fa-solid fa-bag-shopping text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Produit</span>
+        <a href="produit.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path></svg>
+            <span>Produit</span>
         </a>
-        <a href="equipe.html" class="flex flex-col items-center gap-1 text-orange-400">
-            <i class="fa-solid fa-gift text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Équipe</span>
+        <a href="equipe.html" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="12"></rect><path d="M2 7h20M12 22V7"></path></svg>
+            <span>Équipe</span>
         </a>
-        <a href="profil.html" class="flex flex-col items-center gap-1 text-white/50">
-            <i class="fa-solid fa-user text-xl"></i>
-            <span class="text-[10px] font-bold uppercase">Le mien</span>
+        <a href="profil.html" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Le mien</span>
         </a>
     </nav>
 
-    <script>
-        // CONFIGURATION CONGO PÉTROLE
-        const firebaseConfig = {
-            apiKey: "AIzaSy...", 
-            authDomain: "firstsolar-e2ba3.firebaseapp.com",
-            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com",
-            projectId: "firstsolar-e2ba3",
-            storageBucket: "firstsolar-e2ba3.appspot.com",
-            messagingSenderId: "1036814046187",
-            appId: "VOTRE_APP_ID"
-        };
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+    <script>
+        const firebaseConfig = { databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com" };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
-        const userPhone = localStorage.getItem('userPhone');
+        const userId = localStorage.getItem('userId');
 
-        if (!userPhone) { window.location.href = "index.html"; }
-
-        // Récupérer les infos de l'utilisateur pour le code d'invitation
-        database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', snapshot => {
-            if (snapshot.exists()) {
-                snapshot.forEach(child => {
-                    const code = child.val().inviteCode || "NON-DEFINI";
-                    document.getElementById('inviteCode').innerText = code;
-                    document.getElementById('inviteLink').innerText = `https://elec-invest.github.io/LG-invest/register.html?c=${code}`;
-                });
-            }
-        });
-
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Copié : " + text);
+        if (userId) {
+            const userRef = database.ref('congo_petrole/users/' + userId);
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    document.getElementById('displayPhone').innerText = userData.phone || "+243 ...";
+                    let balance = userData.balance || 0;
+                    let revenue = userData.revenuCumule || 0; 
+                    document.getElementById('displayBalance').innerText = "FC " + balance.toLocaleString('en-US');
+                    document.getElementById('displayRevenue').innerText = "FC " + revenue.toLocaleString('en-US');
+                }
             });
         }
     </script>
 </body>
 </html>
+
