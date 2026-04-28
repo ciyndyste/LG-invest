@@ -210,11 +210,11 @@
 
     <div class="balance-container">
         <div class="balance-card">
-            <h3 id="displayBalance">FC 1500</h3>
+            <h3 id="displayBalance">FC 0</h3>
             <p>Solde du compte</p>
         </div>
         <div class="balance-card">
-            <h3 id="displayRevenue">FC 0.00</h3>
+            <h3 id="displayRevenue">FC 0</h3>
             <p>Revenu cumulé</p>
         </div>
     </div>
@@ -303,25 +303,45 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        const firebaseConfig = { databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com" };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        // Utilisation de la configuration identique à register.html
+        const firebaseConfig = { 
+            databaseURL: "https://firstsolar-e2ba3-default-rtdb.firebaseio.com" 
+        };
+        
+        if (!firebase.apps.length) { 
+            firebase.initializeApp(firebaseConfig); 
+        }
+        
         const database = firebase.database();
-        const userId = localStorage.getItem('userId');
+        
+        // On récupère le téléphone stocké lors de l'inscription
+        const userPhone = localStorage.getItem('userPhone');
 
-        if (userId) {
-            const userRef = database.ref('congo_petrole/users/' + userId);
-            userRef.on('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (userData) {
-                    document.getElementById('displayPhone').innerText = userData.phone || "+243 ...";
-                    let balance = userData.balance || 0;
-                    let revenue = userData.revenuCumule || 0; 
-                    document.getElementById('displayBalance').innerText = "FC " + balance.toLocaleString('en-US');
-                    document.getElementById('displayRevenue').innerText = "FC " + revenue.toLocaleString('en-US');
+        if (userPhone) {
+            // Recherche de l'utilisateur par son numéro dans congo_petrole/users
+            database.ref('congo_petrole/users').orderByChild('phone').equalTo(userPhone).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        
+                        // Mise à jour des éléments avec les clés exactes de la base
+                        document.getElementById('displayPhone').innerText = userData.phone || userPhone;
+                        
+                        // On utilise les clés : solde et revenu_cumule
+                        let balance = userData.solde || 0;
+                        let revenue = userData.revenu_cumule || 0; 
+                        
+                        document.getElementById('displayBalance').innerText = "FC " + balance.toLocaleString('en-US');
+                        document.getElementById('displayRevenue').innerText = "FC " + revenue.toLocaleString('en-US');
+                    });
+                } else {
+                    document.getElementById('displayPhone').innerText = "Utilisateur non trouvé";
                 }
             });
+        } else {
+            // Si pas de session, retour à la connexion
+            window.location.href = "index.html";
         }
     </script>
 </body>
 </html>
-
